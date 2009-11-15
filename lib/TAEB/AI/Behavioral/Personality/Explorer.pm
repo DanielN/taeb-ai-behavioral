@@ -37,6 +37,7 @@ sub sort_behaviors {
         "CurseCheck",
         "PushBoulder",
         "Descend",
+        "ExitShop",
         "Search",
     ]);
 }
