@@ -11,7 +11,7 @@ sub prepare {
     my $path = TAEB::World::Path->first_match(
         sub {
             my $tile = shift;
-
+            return 0 if $tile == TAEB->current_tile;
             return $tile->any_adjacent(sub {
                 $_->has_monster && $_->monster->is_shk
             });
