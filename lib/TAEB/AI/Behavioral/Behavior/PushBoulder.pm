@@ -8,7 +8,8 @@ sub push_direction {
 
     return '.' unless $tile->is_walkable;
 
-    my @tiles = $tile->grep_adjacent(sub {
+    # Only push orthogonal, handling diagonal movement is harder (doors, etc)
+    my @tiles = $tile->grep_orthogonal(sub {
         my $t = shift;
         my $beyond = $t->level->at($t->x * 2 - $tile->x, $t->y * 2 - $tile->y);
         return 0 unless defined $beyond;
