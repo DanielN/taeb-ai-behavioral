@@ -31,7 +31,7 @@ sub prepare {
             $self->do(drop => items => \@drop);
         }
 
-        $self->urgency('unimportant');
+        $self->urgency('important');
         return;
     }
 
