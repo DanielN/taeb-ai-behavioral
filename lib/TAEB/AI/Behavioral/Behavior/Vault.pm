@@ -27,6 +27,8 @@ sub prepare {
     }
 }
 
+use constant max_urgency => 'unimportant';
+
 sub drop {
     my $self = shift;
     my $item = shift;

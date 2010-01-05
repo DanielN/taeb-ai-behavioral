@@ -45,6 +45,8 @@ sub prepare {
         'fallback');
 }
 
+use constant max_urgency => 'fallback';
+
 __PACKAGE__->meta->make_immutable;
 
 1;

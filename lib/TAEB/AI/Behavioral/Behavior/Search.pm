@@ -48,6 +48,8 @@ sub prepare {
     $self->if_path($path => "Heading to a search hotspot");
 }
 
+use constant max_urgency => 'fallback';
+
 sub pickup {
     my $self = shift;
     my $item = shift;

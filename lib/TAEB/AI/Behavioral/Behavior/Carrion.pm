@@ -49,6 +49,8 @@ sub match_tile {
 
 sub tile_description { "a corpse" }
 
+use constant max_urgency => 'unimportant';
+
 __PACKAGE__->meta->make_immutable;
 
 1;
