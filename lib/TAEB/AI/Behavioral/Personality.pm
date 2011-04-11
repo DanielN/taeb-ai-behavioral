@@ -1,4 +1,5 @@
 package TAEB::AI::Behavioral::Personality;
+use Moose;
 use TAEB::OO;
 use Time::HiRes qw/time/;
 extends 'TAEB::AI';
@@ -20,29 +21,40 @@ has behavior => (
 );
 
 has behaviors => (
-    metaclass => 'Collection::Hash',
-    is        => 'ro',
+    traits    => ['Hash'],
     isa       => 'HashRef[TAEB::AI::Behavioral::Behavior]',
     lazy      => 1,
-    provides  => {
-        get    => 'get_behavior',
-        set    => '_set_behavior',
-        delete => '_delete_behavior',
+    handles => {
+        behaviors        => 'values',
+        get_behavior     => 'get',
+        _set_behavior    => 'set',
+        _delete_behavior => 'delete',
     },
     default   => sub {
         my $self = shift;
+        $self->sort_behaviors;
         my %behaviors = map {
             $_ => $self->_instantiate_behavior($_)
-        } $self->sort_behaviors;
+        } $self->prioritized_behaviors;
         return \%behaviors;
     },
 );
 
 has prioritized_behaviors => (
-    is         => 'rw',
-    isa        => 'ArrayRef[Str]',
-    auto_deref => 1,
+    traits  => ['Array'],
+    writer  => '_set_prioritized_behaviors',
+    isa     => 'ArrayRef[Str]',
+    handles => {
+        prioritized_behaviors => 'elements',
+    },
 );
+
+around prioritized_behaviors => sub {
+    my $orig = shift;
+    my $self = shift;
+    return $self->$orig unless @_;
+    return $self->_set_prioritized_behaviors(@_);
+};
 
 sub _instantiate_behavior {
     my $self = shift;
@@ -205,7 +217,7 @@ sub pickup {
 
     my $final_pick = 0;
 
-    for my $behavior (values %{ $self->behaviors }) {
+    for my $behavior ($self->behaviors) {
         my $pick = $behavior->pickup($item);
 
         $pick = ref $pick ? $$pick : $pick ? 1e1000 : 0;
@@ -237,7 +249,7 @@ sub drop {
     my $item = shift;
     my $should_drop = 0;
 
-    for my $behavior (values %{ $self->behaviors }) {
+    for my $behavior ($self->behaviors) {
         my $drop = $behavior->drop($item);
 
         # behavior is indifferent. Next!
